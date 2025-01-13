@@ -1,0 +1,4 @@
+name: create manifest files
+
+on:
+  workflow_dispatch:
