@@ -20,7 +20,7 @@ jobs:
       - name: Clone Target Repository
         run: |
           # Define the target repository and branch
-          TARGET_REPO="https://argocd_access_token@github.com/anveshnani366/chartis-manifest.git"
+          TARGET_REPO="https://ARGOCD_ACCESS_TOKEN@github.com/anveshnani366/chartis-manifest.git"
           TARGET_BRANCH="main"
 
           # Clone the target repository into a folder named 'target-repo'
