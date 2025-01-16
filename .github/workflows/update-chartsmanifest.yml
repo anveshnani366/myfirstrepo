@@ -8,7 +8,7 @@ on:
       folder_name:
         description: 'Target folder to save new YAML files'
         required: true
-        default: 'backup-yaml'
+        default: 'pt-schedule/akatepa-starter-app/dev/g-aks-2n-com-ecom-02'
 
 jobs:
   copy-yaml-in-target:
@@ -17,16 +17,10 @@ jobs:
     steps:
       # Step 1: Clone the target repository
       - name: Clone Target Repository
-      
         env:
           GH_TOKEN: ${{ secrets.CHARTIS_MANIFEST_TOKEN }}
         run: |
-          git clone --branch main https://github.com/anveshnani366/chartis-manifest.git target-repo
-          cd target-repo
-          git remote set-url origin https://$GH_TOKEN@github.com/anveshnani366/chartis-manifest.git
-
-          # Clone the target repository into a folder named 'target-repo'
-          git clone --branch $TARGET_BRANCH $TARGET_REPO target-repo
+          git clone --branch main https://github.com/anveshnani366/chartis-manifest.git target-rep
 
       # Step 2: Copy YAML Files to the User-Defined Folder
       - name: Copy YAML Files to Folder
