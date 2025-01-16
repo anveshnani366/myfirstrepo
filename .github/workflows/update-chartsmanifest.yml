@@ -18,10 +18,10 @@ jobs:
     steps:
       # Step 1: Clone the target repository
       - name: Clone Target Repository
+        env:
+          GH_TOKEN: ${{ secrets.chartis_manifest_token }}
         run: |
-          # Define the target repository and branch
-          TARGET_REPO="https://chartis-maniest-token@github.com/anveshnani366/chartis-manifest.git"
-          TARGET_BRANCH="main"
+          git clone --branch main https://$GH_TOKEN@github.com/anveshnani366/chartis-manifest.git target-repo
 
           # Clone the target repository into a folder named 'target-repo'
           git clone --branch $TARGET_BRANCH $TARGET_REPO target-repo
