@@ -1,0 +1,67 @@
+name: Copy YAML Files to Specific Folder in Target Repo
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on push to the 'main' branch
+  workflow_dispatch:
+    inputs:
+      folder_name:
+        description: 'Target folder to save new YAML files'
+        required: true
+        default: 'backup-yaml'
+
+jobs:
+  copy-yaml-in-target:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone the target repository
+      - name: Clone Target Repository
+        run: |
+          # Define the target repository and branch
+          TARGET_REPO="https://argocd_access_token@github.com/anveshnani366/chartis-manifest.git"
+          TARGET_BRANCH="main"
+
+          # Clone the target repository into a folder named 'target-repo'
+          git clone --branch $TARGET_BRANCH $TARGET_REPO target-repo
+
+      # Step 2: Copy YAML Files to the User-Defined Folder
+      - name: Copy YAML Files to Folder
+        run: |
+          cd target-repo  # Navigate to the target repository
+
+          # User-defined folder name from workflow input
+          TARGET_FOLDER="${{ github.event.inputs.folder_name }}"
+
+          # Ensure the target folder exists
+          mkdir -p "$TARGET_FOLDER"
+
+          # Find all YAML files in the repository (excluding .git folder)
+          YAML_FILES=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \) -not -path "./.git/*" -not -path "./$TARGET_FOLDER/*")
+
+          # Copy each YAML file into the specified target folder
+          for file in $YAML_FILES; do
+            cp "$file" "$TARGET_FOLDER/"
+            echo "Copied $file to $TARGET_FOLDER/"
+          done
+
+      # Step 3: Commit and Push Changes to Target Repository
+      - name: Commit and Push Changes
+        run: |
+          cd target-repo
+
+          # Configure Git
+          git config user.name "GitHub Actions"
+          git config user.email "anveshkatepalli@gmail.com"
+
+          # Commit changes if any
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add .
+            git commit -m "Copied YAML files to ${{ github.event.inputs.folder_name }}"
+            git push origin main
+          else
+            echo "No changes to commit."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
